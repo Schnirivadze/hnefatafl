@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ua">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hnefetafl</title>
+    <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="./style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono&display=swap" rel="stylesheet">
+</head>
+
+<body onmouseover=""onmouseup="unselectpiece()" onload="drawboard();drawpieces();removedefault();">
+    <div id="board" ></div>
+    <div id="pieces"></div>
+</body>
+<script src="./drawing.js"></script>
+<script src="./listeners.js"></script>
+<script>
+    let serverurl = "http://localhost:8080";
+    let username = "DEFAULT USERNAME";
+    let mouseX = 0;
+    let mouseY = 0;
+    var selection=null;
+    
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+    function removedefault() {
+        var images = document.querySelectorAll("img");
+
+        images.forEach(function (img) {
+            img.addEventListener("dragstart", function (e) {
+                e.preventDefault(); // Prevent the default drag-and-drop behavior
+            });
+        });
+    }
+    function selectpiece(id,event) {
+        updateMousePosition(event);
+        var piece = document.getElementById(id);
+        var mousex_offset=mouseX - piece.style.left.slice(0,piece.style.left.length-2)
+        var mousey_offset=mouseY - piece.style.top.slice(0,piece.style.top.length-2)
+        console.log(mousex_offset);
+        selection=setInterval(function () {
+            document.title = mouseX;
+            piece.style.top=(mouseY-mousey_offset)+"px";
+            piece.style.left=(mouseX-mousex_offset)+"px";
+        },10);
+    }
+    function unselectpiece() {
+        clearInterval(selection);
+        document.title = "left";
+    }
+</script>
+
+</html>

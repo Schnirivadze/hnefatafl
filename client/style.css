@@ -1,0 +1,19 @@
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+body {
+    margin: 2.5%;
+    overflow: hidden;
+    background-color: rgba(255, 255, 128, 0.5);
+    font-family: 'DM Mono', monospace;
+}
+img{
+    transition: margin-top 0.1s;
+}
+.pieces:hover{
+    margin-top: -10px;
+}
