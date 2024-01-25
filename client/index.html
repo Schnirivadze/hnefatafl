@@ -15,8 +15,8 @@
     <div id="board" ></div>
     <div id="pieces"></div>
 </body>
-<script src="./drawing.js"></script>
-<script src="./listeners.js"></script>
+<script src="./js/drawing.js"></script>
+<script src="./js/listeners.js"></script>
 <script>
     let serverurl = "http://localhost:8080";
     let username = "DEFAULT USERNAME";
@@ -27,31 +27,7 @@
     function getRandomInt(max) {
         return Math.floor(Math.random() * max);
     }
-    function removedefault() {
-        var images = document.querySelectorAll("img");
-
-        images.forEach(function (img) {
-            img.addEventListener("dragstart", function (e) {
-                e.preventDefault(); // Prevent the default drag-and-drop behavior
-            });
-        });
-    }
-    function selectpiece(id,event) {
-        updateMousePosition(event);
-        var piece = document.getElementById(id);
-        var mousex_offset=mouseX - piece.style.left.slice(0,piece.style.left.length-2)
-        var mousey_offset=mouseY - piece.style.top.slice(0,piece.style.top.length-2)
-        console.log(mousex_offset);
-        selection=setInterval(function () {
-            document.title = mouseX;
-            piece.style.top=(mouseY-mousey_offset)+"px";
-            piece.style.left=(mouseX-mousex_offset)+"px";
-        },10);
-    }
-    function unselectpiece() {
-        clearInterval(selection);
-        document.title = "left";
-    }
+   
 </script>
 
 </html>
