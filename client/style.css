@@ -12,8 +12,11 @@ body {
     font-family: 'DM Mono', monospace;
 }
 img{
-    transition: margin-top 0.1s;
+    transition: top 0.1s,left 0.1s,margin-top 0.1s,opacity 0.25s;
 }
 .pieces:hover{
     margin-top: -10px;
+}
+.unaccessble{
+    opacity: 0.75;
 }
