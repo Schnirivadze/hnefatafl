@@ -97,15 +97,8 @@ function selectpiece(id, event) {
     updateMousePosition(event);// update mouse position
     console.info(`${id}`);
     selection.piece = document.getElementById(id);//set selection
-    //DEBUG
-    document.getElementById("debug").innerHTML += `<div class="dot red" style="top: ${mouse.pos.y - 5}px;left: ${mouse.pos.x - 5}px;z-index: 9999999999999999999999999;"></div>`
-
     selection_y_offset =  pieceheight-(mouse.pos.y-(selection.piece.style.top.slice(0, selection.piece.style.top.length - 2) - 0))-pieceheight/8;
-    //console.warn(`${0}|${y_offset}`);
-
     updateMousePosition(event);// update mouse position
-    document.getElementById("debug").innerHTML += `<div class="dot green" style="top: ${mouse.pos.y - 5}px;left: ${mouse.pos.x - 5}px;z-index: 9999999999999999999999999;"></div>`
-    //ENDDEBUG
 
     selection.piece.style.zIndex = "" + Number.MAX_SAFE_INTEGER;//set Zindex to max
     selection.startPos = mouse.boardPos;//lock start position
