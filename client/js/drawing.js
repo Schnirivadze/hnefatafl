@@ -88,7 +88,7 @@ function drawpieces() {
             board_id[y][x] = piecenumber;
 
             //add piece to container
-            container.innerHTML += `<img class="pieces" id="piece_${piecenumber}" onmousedown ="selectpiece('piece_${piecenumber}',event)" src="./media/pawn (${piece_type}).png" style="z-index: 1;width: ${piecewidth}px;position: absolute;top: ${realPos.y}px;left: ${realPos.x}px;" alt="${x}|${y}">`;
+            container.innerHTML += `<img class="pieces" id="piece_${piecenumber}" onmousedown ="selectpiece('piece_${piecenumber}',event)" src="./media/pawn (${piece_type}).png" style="z-index: ${x+y};width: ${piecewidth}px;position: absolute;top: ${realPos.y}px;left: ${realPos.x}px;" alt="${x}|${y}">`;
             piecenumber++;// increment the counter
         }
     }
@@ -102,7 +102,7 @@ function selectpiece(id, event) {
 
     selection.piece.style.zIndex = "" + Number.MAX_SAFE_INTEGER;//set Zindex to max
     selection.startPos = mouse.boardPos;//lock start position
-    var atiles = getaccsesibletiles(selection.startPos.x, selection.startPos.y);//get list of accsesible tiles
+    var atiles = getaccessibletiles(selection.startPos.x, selection.startPos.y);//get list of accsesible tiles
     showacessibletiles(selection.startPos.x, selection.startPos.y);//visualise allowed moves
 
     //set position every piece_movement_interval ms
@@ -123,7 +123,7 @@ function unselectpiece() {
     showacessibletiles(-1, -1);//reset opacity
     clearInterval(selection.interval);//stop moving selected piece
     selection.interval = null;//just to make sure
-    selection.piece.style.zIndex = "1";//reset Zindex
+	selection.piece.style.zIndex = ""+(selection.endPos.x+selection.endPos.y);//correct z-index
     selection.piece = null;//remove selection
 
     //if moved
@@ -149,7 +149,7 @@ function showacessibletiles(x, y) {
         for (let t = 0; t < tiles.length; t++) { tiles[t].style.opacity = unaccessible_tile_opacity; }
         for (let p = 0; p < pieces.length; p++) { pieces[p].style.opacity = irrelevant_piece_opacity; }
         //get accsesible tiles and pieces in the way
-        var actiles = getaccsesibletiles(x, y);
+        var actiles = getaccessibletiles(x, y);
         var piecesitw = getpiecesintheway(x, y);
         //set opacity
         document.getElementById(`piece_${board_id[y][x]}`).style.opacity = selected_piece_opacity;
@@ -158,7 +158,7 @@ function showacessibletiles(x, y) {
     }
 
 }
-function getaccsesibletiles(x, y) {
+function getaccessibletiles(x, y) {
     var atiles = new Array();
     atiles.push([x, y]);//push position of a piece
     //check left until found the edge of the map
