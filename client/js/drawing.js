@@ -1,128 +1,224 @@
+//size
 var boardsize = 11;
-let board_a = new Array(boardsize);
+let board_a = new Array(boardsize);//array of pieces`s types
 for (let l = 0; l < board_a.length; l++) { board_a[l] = new Array(boardsize); }
 for (let y = 0; y < board_a.length; y++) { for (let x = 0; x < boardsize; x++) { board_a[y][x] = 0; } }
-
+let board_id = new Array(boardsize);//map with ids of pieces
+for (let l = 0; l < board_id.length; l++) { board_id[l] = new Array(boardsize); }
+for (let y = 0; y < board_id.length; y++) { for (let x = 0; x < boardsize; x++) { board_id[y][x] = -1; } }
 var tilewidth = 100;
 var tileheight = 100;
-var selection = null;
-
-var overall_x_offset = (window.innerWidth-boardsize*tilewidth)/2;
-var overall_y_offset = (window.innerHeight-boardsize*tileheight/2)/2;
-var piece_x_offset = 12+overall_x_offset;
-var piece_y_offset = -90+overall_y_offset;
-var board_x_offset = 0+overall_x_offset;
-var board_y_offset = 0+overall_y_offset;
-
+var piecewidth = 75;
+var piecewidth = 75;
+var pieceheight = piecewidth/608*1080;
+//selection
+var selection = {
+    interval: null,
+    piece: null,
+    startPos: {
+        x: 0, y: 0
+    },
+    endPos: {
+        x: 0, y: 0
+    }
+};
+var mouse = {
+    pos: {
+        x: 0, y: 0
+    },
+    boardPos: {
+        x: 0, y: 0
+    }
+}
+//offset
+var overall_x_offset = (window.innerWidth - boardsize * tilewidth) / 2;
+var overall_y_offset = (window.innerHeight - boardsize * tileheight / 2) / 2;
+var piece_x_offset = 12 + overall_x_offset;
+var piece_y_offset = -90 + overall_y_offset;
+var board_x_offset = 0 + overall_x_offset;
+var board_y_offset = 0 + overall_y_offset;
+var selection_y_offset = 0;
+//opacity
+var default_tile_opacity = 1;
+var unaccessible_tile_opacity = 0.25;
+var accessible_tile_opacity = 1;
+var default_piece_opacity = 1;
+var irrelevant_piece_opacity = 0.1;
+var relevant_piece_opacity = 0.8;
+var selected_piece_opacity = 1;
+//other
+var piece_movement_interval = 50;
 
 
 function drawboard() {
-    let container = document.getElementById("board");
-    container.innerHTML = "";
+    let container = document.getElementById("board");//get container
+    container.innerHTML = "";//clear it
     for (let y = 0; y < boardsize; y++) {
         for (let x = 0; x < boardsize; x++) {
-            var real_x = (x - y - 1) * tilewidth * 0.5 + (tilewidth * boardsize * 0.5) + board_x_offset;
-            var real_y = (x + y) * tileheight * 0.25 + board_y_offset;
+            var realPos = getrealposition(x, y, board_x_offset, board_y_offset);//get top and left of piece image tag
+
+            //get tile type (0-default 1-white 2-red 3-blue)
             var tile_type = 0;
             if ((y == 5 && x <= 7 && x >= 3) || (x == 5 && y <= 7 && y >= 3) || (y >= 4 && x >= 4 && y <= 6 && x <= 6)) tile_type = 2;
             if ((y == x || x + y == boardsize - 1) && (y == boardsize - 1 || y == 0 || y == 5)) tile_type = 1;
             if (((x == 0 || x == 10) && (y >= 3 && y <= 7)) || ((y == 0 || y == 10) && (x >= 3 && x <= 7)) || ((x == 9 || x == 1) && y == 5) || ((y == 9 || y == 1) && x == 5)) tile_type = 3;
-            container.innerHTML += `
-            <img id = "tile_${x}_${y}" class="tiles" src="./media/tile${tile_type}.png" style="width: ${tilewidth}px;position: absolute;top: ${real_y}px;left: ${real_x}px;" alt="${x}|${y}">
-            `
+
+            //add piece to container
+            container.innerHTML += `<img id = "tile_${x}_${y}" class="tiles" src="./media/tile${tile_type}.png" style="width: ${tilewidth}px;position: absolute;top: ${realPos.y}px;left: ${realPos.x}px;" alt="${x}|${y}">`;
         }
     }
 }
 function drawpieces() {
-    let container = document.getElementById("pieces");
-    container.innerHTML = "";
-    var piecenumber = 0;
+    let container = document.getElementById("pieces");//get container
+    container.innerHTML = "";//clear it
+    var piecenumber = 0;//set counter
     for (let y = 0; y < boardsize; y++) {
         for (let x = 0; x < boardsize; x++) {
-            var real_x = (x - y - 1) * tilewidth * 0.5 + (tilewidth * boardsize * 0.5) + piece_x_offset;
-            var real_y = (x + y) * tileheight * 0.25 + piece_y_offset;
-            var tile_type = 0;
-            if ((y == 5 && x <= 7 && x >= 3) || (x == 5 && y <= 7 && y >= 3) || (y >= 4 && x >= 4 && y <= 6 && x <= 6)) tile_type = 3;
-            if (y == x && y == 5) tile_type = 1;
-            if (((x == 0 || x == 10) && (y >= 3 && y <= 7)) || ((y == 0 || y == 10) && (x >= 3 && x <= 7)) || ((x == 9 || x == 1) && y == 5) || ((y == 9 || y == 1) && x == 5)) tile_type = 2;
-            board_a[y][x]=tile_type;
-            if (tile_type == 0) continue;
-            container.innerHTML += `
-            <img class="pieces" id="piece_${piecenumber}"  onmousedown ="selectpiece('piece_${piecenumber}',event)" src="./media/pawn (${tile_type}).png" style="user-drag: none;width: ${75}px;position: absolute;top: ${real_y}px;left: ${real_x}px;" alt="${x}|${y}">
-            `
-            piecenumber++;
+            var realPos = getrealposition(x, y, piece_x_offset, piece_y_offset);//get top and left of piece image tag
+
+            //get piece type (1-king 2-attacker 3-defender)
+            var piece_type = 0;
+            if ((y == 5 && x <= 7 && x >= 3) || (x == 5 && y <= 7 && y >= 3) || (y >= 4 && x >= 4 && y <= 6 && x <= 6)) piece_type = 3;
+            if (y == x && y == 5) piece_type = 1;
+            if (((x == 0 || x == 10) && (y >= 3 && y <= 7)) || ((y == 0 || y == 10) && (x >= 3 && x <= 7)) || ((x == 9 || x == 1) && y == 5) || ((y == 9 || y == 1) && x == 5)) piece_type = 2;
+
+            //update maps
+            board_a[y][x] = piece_type;
+            if (piece_type == 0) { board_id[y][x] = -1; continue; } // if there shouldnt be any piece
+            board_id[y][x] = piecenumber;
+
+            //add piece to container
+            container.innerHTML += `<img class="pieces" id="piece_${piecenumber}" onmousedown ="selectpiece('piece_${piecenumber}',event)" src="./media/pawn (${piece_type}).png" style="z-index: 1;width: ${piecewidth}px;position: absolute;top: ${realPos.y}px;left: ${realPos.x}px;" alt="${x}|${y}">`;
+            piecenumber++;// increment the counter
         }
     }
 }
 function selectpiece(id, event) {
-    updateMousePosition(event);
-    var piece = document.getElementById(id);
-    piece.style.zIndex = Number.MAX_VALUE;
-    //var (mouseX-board_x_offset)_offset = (mouseX-board_x_offset) - piece.style.left.slice(0, piece.style.left.length - 2)
-    //var (mouseY-board_y_offset)_offset = (mouseY-board_y_offset) - piece.style.top.slice(0, piece.style.top.length - 2)
-    var firstboardX=Math.round((2 * (mouseY-board_y_offset) * tilewidth - (mouseX-board_x_offset) * tileheight) / (tilewidth * tileheight)) + 5;
-    var firstboardY=Math.round((2 * (mouseY-board_y_offset) * tilewidth + (mouseX-board_x_offset) * tileheight) / (tilewidth * tileheight)) - 6;;
-    var lastboardX, lastboardY;
-    showacessibletiles(firstboardX, firstboardY);
-    selection = setInterval(function () {
-        
-        var boardX = Math.round((2 * (mouseY-board_y_offset) * tilewidth - (mouseX-board_x_offset) * tileheight) / (tilewidth * tileheight)) + 5;
-        var boardY = Math.round((2 * (mouseY-board_y_offset) * tilewidth + (mouseX-board_x_offset) * tileheight) / (tilewidth * tileheight)) - 6;
-        if (boardX > 10) boardX = 10;
-        else if (boardX < 0) boardX = 0;
-        if (boardY > 10) boardY = 10;
-        else if (boardY < 0) boardY = 0;
+    updateMousePosition(event);// update mouse position
+    console.info(`${id}`);
+    selection.piece = document.getElementById(id);//set selection
+    //DEBUG
+    document.getElementById("debug").innerHTML += `<div class="dot red" style="top: ${mouse.pos.y - 5}px;left: ${mouse.pos.x - 5}px;z-index: 9999999999999999999999999;"></div>`
 
-        if (boardX != lastboardX && boardY != lastboardY) {
-            var real_x = (boardY - boardX - 1) * tilewidth * 0.5 + (tilewidth * boardsize * 0.5) + piece_x_offset;
-            var real_y = (boardY + boardX) * tileheight * 0.25 + piece_y_offset;
-            //document.title = `${boardX};${boardY}`;
-            piece.style.top = real_y + "px";
-            piece.style.left = real_x + "px";
+    selection_y_offset =  pieceheight-(mouse.pos.y-(selection.piece.style.top.slice(0, selection.piece.style.top.length - 2) - 0))-pieceheight/8;
+    //console.warn(`${0}|${y_offset}`);
+
+    updateMousePosition(event);// update mouse position
+    document.getElementById("debug").innerHTML += `<div class="dot green" style="top: ${mouse.pos.y - 5}px;left: ${mouse.pos.x - 5}px;z-index: 9999999999999999999999999;"></div>`
+    //ENDDEBUG
+
+    selection.piece.style.zIndex = "" + Number.MAX_SAFE_INTEGER;//set Zindex to max
+    selection.startPos = mouse.boardPos;//lock start position
+    var atiles = getaccsesibletiles(selection.startPos.x, selection.startPos.y);//get list of accsesible tiles
+    showacessibletiles(selection.startPos.x, selection.startPos.y);//visualise allowed moves
+
+    //set position every piece_movement_interval ms
+    selection.interval = setInterval(function () {
+        //if move is allowed
+        if (atiles.some(item => item[0] === mouse.boardPos.x && item[1] === mouse.boardPos.y)) {
+            selection.endPos = mouse.boardPos;//update end position
+
+            //set top and left of piece image tag
+            var realPos = getrealposition(selection.endPos.x, selection.endPos.y, piece_x_offset, piece_y_offset);
+            selection.piece.style.top = realPos.y + "px";
+            selection.piece.style.left = realPos.x + "px";
         }
-    }, 50);
+    }, piece_movement_interval);
 }
 function unselectpiece() {
-    showacessibletiles(-1, -1)
-    clearInterval(selection);
+    selection_y_offset=0;//reset offset
+    showacessibletiles(-1, -1);//reset opacity
+    clearInterval(selection.interval);//stop moving selected piece
+    selection.interval = null;//just to make sure
+    selection.piece.style.zIndex = "1";//reset Zindex
+    selection.piece = null;//remove selection
+
+    //if moved
+    if (!(selection.startPos.x == selection.endPos.x && selection.startPos.y == selection.endPos.y)) {
+
+        //move the id and type
+        board_id[selection.endPos.y][selection.endPos.x] = board_id[selection.startPos.y][selection.startPos.x];
+        board_id[selection.startPos.y][selection.startPos.x] = -1;
+        board_a[selection.endPos.y][selection.endPos.x] = board_a[selection.startPos.y][selection.startPos.x];
+        board_a[selection.startPos.y][selection.startPos.x] = 0;
+    }
 }
 function showacessibletiles(x, y) {
+    //get all pieces and tiles
     var tiles = document.getElementsByClassName("tiles");
     var pieces = document.getElementsByClassName("pieces");
+    //if reset
     if (x == -1 || y == -1) {
-        for (let t = 0; t < tiles.length; t++) { tiles[t].style.opacity = 1; }
+        for (let t = 0; t < tiles.length; t++) { tiles[t].style.opacity = default_tile_opacity; }
+        for (let p = 0; p < pieces.length; p++) { pieces[p].style.opacity = default_piece_opacity; }
     } else {
-        for (let t = 0; t < tiles.length; t++) { tiles[t].style.opacity = 0.25;  }
-        var actiles= getacessibletiles(x,y);
-        for (let t = 0; t < actiles.length; t++) {  document.getElementById(`tile_${actiles[t][1]}_${actiles[t][0]}`).style.opacity = 1; }
+        //make everything transparent
+        for (let t = 0; t < tiles.length; t++) { tiles[t].style.opacity = unaccessible_tile_opacity; }
+        for (let p = 0; p < pieces.length; p++) { pieces[p].style.opacity = irrelevant_piece_opacity; }
+        //get accsesible tiles and pieces in the way
+        var actiles = getaccsesibletiles(x, y);
+        var piecesitw = getpiecesintheway(x, y);
+        //set opacity
+        document.getElementById(`piece_${board_id[y][x]}`).style.opacity = selected_piece_opacity;
+        for (let t = 0; t < actiles.length; t++) { document.getElementById(`tile_${actiles[t][0]}_${actiles[t][1]}`).style.opacity = accessible_tile_opacity; }
+        for (let p = 0; p < piecesitw.length; p++) { document.getElementById(`piece_${piecesitw[p]}`).style.opacity = relevant_piece_opacity; }
     }
 
 }
-function getacessibletiles(x,y) {
-    var atiles=new Array();
-    var ispawn=board_a[y][x]!=1;
-    atiles.push([x,y]);
-    if(ispawn){
+function getaccsesibletiles(x, y) {
+    var atiles = new Array();
+    atiles.push([x, y]);//push position of a piece
+    //check left until found the edge of the map
     for (let left = 1; left < boardsize; left++) {
-        if(x-left<0) break;
-        if(board_a[y][x-left]==0){ atiles.push([x-left,y]);}
-        else break;
+        if (x - left < 0) break; // if out of bounds
+        else if (board_a[y][x - left] == 0) { atiles.push([x - left, y]); }  // if tile is accsesible
+        else break; // if found edge
     }
+    //check right until found the edge of the map
     for (let right = 1; right < boardsize; right++) {
-        if(x+right>=boardsize) break;
-        if(board_a[y][x+right]==0){ atiles.push([x+right,y]);}
-        else break;
+        if (x + right >= boardsize) break; // if out of bounds
+        else if (board_a[y][x + right] == 0) { atiles.push([x + right, y]); } // if tile is accsesible
+        else break; // if found edge
     }
+    //check up until found the edge of the map
     for (let up = 1; up < boardsize; up++) {
-        if(y-up<0) break;
-        if(board_a[y-up][x]==0){ atiles.push([x,y-up]);}
-        else break;
+        if (y - up < 0) break; // if out of bounds
+        else if (board_a[y - up][x] == 0) { atiles.push([x, y - up]); } // if tile is accsesible
+        else break; // if found edge
     }
+    //check down until found the edge of the map
     for (let down = 1; down < boardsize; down++) {
-        if(y+down>=boardsize) break;
-        if(board_a[y+down][x]==0){ atiles.push([x,y+down]);}
-        else break;
+        if (y + down >= boardsize) break; // if out of bounds
+        else if (board_a[y + down][x] == 0) { atiles.push([x, y + down]); } // if tile is accsesible
+        else break; // if found edge
     }
-}
     return atiles;
+}
+function getpiecesintheway(x, y) {
+    var piecesitw = new Array();
+    //check left until found piece in the way or end of the map
+    for (let left = 1; left < boardsize; left++) {
+        if (x - left < 0) break; // if out of bounds
+        else if (board_a[y][x - left] == 0) continue; // if empty tile
+        else { piecesitw.push(board_id[y][x - left]); break; }; // if found piece
+    }
+    //check right until found piece in the way or end of the map
+    for (let right = 1; right < boardsize; right++) {
+        if (x + right >= boardsize) break; // if out of bounds
+        else if (board_a[y][x + right] == 0) continue; // if empty tile
+        else { piecesitw.push(board_id[y][x + right]); break; }; // if found piece
+    }
+    //check up until found piece in the way or end of the map
+    for (let up = 1; up < boardsize; up++) {
+        if (y - up < 0) break; // if out of bounds
+        else if (board_a[y - up][x] == 0) continue; // if empty tile
+        else { piecesitw.push(board_id[y - up][x]); break; }; // if found piece
+    }
+    //check down until found piece in the way or end of the map
+    for (let down = 1; down < boardsize; down++) {
+        if (y + down >= boardsize) break; // if out of bounds
+        else if (board_a[y + down][x] == 0) continue; // if empty tile
+        else { piecesitw.push(board_id[y + down][x]); break; }; // if found piece
+    }
+    return piecesitw;
 }

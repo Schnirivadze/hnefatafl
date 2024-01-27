@@ -1,15 +1,19 @@
 ![](./media/kulik.jpg)
+
 ## Current bugs
-- If you press on top part of a piece it will snap to mouse position 
-- Pieces can move against rules
-- Z-Index is left on maximum
+- Pieces hover works in unconvinient ways
 
 ## Features
 #### Added in this commit
-- Visualisation of allowed moves
-- Board is now centered
-- ![Board is now centered](https://c.tenor.com/9RsYHkzRE0EAAAAC/tenor.gif)
+- Now when you press on a piece the code uses piece position and not the mouse position
+- A bit better visualisation of allowed moves(now irrelevant to move pieces are half tranfparent)
+- Z-Index is better but still wrong
+- Pieces cant move against rules
+- COMMENTS!!!
+
 #### Already existing
+- Visualisation of allowed moves
+- Board is centered
 - Eased snapping
 - Pieces snapping to tiles
 - Movable pieces

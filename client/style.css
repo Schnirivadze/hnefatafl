@@ -17,6 +17,16 @@ img{
 .pieces:hover{
     margin-top: -10px;
 }
-.unaccessble{
-    opacity: 0.75;
+.dot{
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    border-radius: 50%;
+    z-index: 9999999999999999999999999;
+}
+.red{
+    background-color: red;
+}
+.green{
+    background-color: greenyellow;
 }

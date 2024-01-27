@@ -11,23 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono&display=swap" rel="stylesheet">
 </head>
 
-<body onmouseover=""onmouseup="unselectpiece()" onload="drawboard();drawpieces();removedefault();">
+<body onmouseup="unselectpiece()" onload="drawboard();drawpieces();removedefault();">
     <div id="board" ></div>
     <div id="pieces"></div>
+    <div id="debug">
+    </div>
 </body>
 <script src="./js/drawing.js"></script>
-<script src="./js/logic.js"></script>
 <script src="./js/listeners.js"></script>
-<script>
-    let serverurl = "http://localhost:8080";
-    let username = "dafault usename";
-    let mouseX = 0;
-    let mouseY = 0;
-    
-    function getRandomInt(max) {
-        return Math.floor(Math.random() * max);
-    }
-
-</script>
-
 </html>
