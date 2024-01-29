@@ -5,10 +5,11 @@
 
 ## Features
 #### Added in this commit
-- File names and variables changed to be more easily readable
-- Implemented sides (right now only affects what pieces you can move and hover)
+- An animation of pieces
 
 #### Already existing
+- File names and variables are easily readable
+- Implemented sides 
 - Added comments
 - Z-Index is fixed
 - Pieces cant move against rules

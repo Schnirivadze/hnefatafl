@@ -47,6 +47,9 @@ var default_piece_opacity = 1;
 var irrelevant_piece_opacity = 0.1;
 var relevant_piece_opacity = 0.8;
 var selected_piece_opacity = 1;
+var king_reveal_timeout = 0;
+var defenders_reveal_timeout = 500;
+var attackers_reveal_timeout = 1000;
 //other
 var piece_movement_interval = 50;
 
@@ -92,10 +95,34 @@ function drawpieces() {
             var isfriendly = (side == piece_type) || (side == "defender" && piece_type == "king");
 
             //add piece to container
-            container.innerHTML += `<img class="pieces ${(isfriendly) ? 'friendly_piece' : ''}" id="piece_${piecenumber}" onmousedown ="selectpiece('piece_${piecenumber}',event)" src="./media/${piece_type}.png" style="z-index: ${x + y};width: ${piecewidth}px;position: absolute;top: ${realPos.y}px;left: ${realPos.x}px;" alt="${x}|${y}">`;
+            container.innerHTML += `<img class="pieces ${(isfriendly) ? 'friendly_piece' : ''} ${piece_type}" id="piece_${piecenumber}" onmousedown ="selectpiece('piece_${piecenumber}',event)" src="./media/${piece_type}.png" style="opacity:0;z-index: ${x + y};width: ${piecewidth}px;position: absolute;top: ${realPos.y}px;left: ${realPos.x}px;" alt="${x}|${y}">`;
             piecenumber++;// increment the counter
         }
     }
+}
+function animatepieces() {
+    //reveal king in king_reveal_timeout ms
+    var king = document.getElementsByClassName("king")[0];
+    setTimeout(function () {
+        king.style.opacity = "1"
+    }, king_reveal_timeout)
+
+    //reveal all defenders in defenders_reveal_timeout ms
+    var defenders = document.getElementsByClassName("defender");
+    for (let d = 0; d < defenders.length; d++) {
+        setTimeout(function () {
+            defenders[d].style.opacity = "1";
+        }, defenders_reveal_timeout)
+    }
+
+    //reveal all attackers in attackers_reveal_timeout ms
+    var attackers = document.getElementsByClassName("attacker");
+    for (let a = 0; a < attackers.length; a++) {
+        setTimeout(function () {
+            attackers[a].style.opacity = "1";
+        }, attackers_reveal_timeout)
+    }
+
 }
 function selectpiece(id, event) {
     selection.piece = document.getElementById(id);//set selection
