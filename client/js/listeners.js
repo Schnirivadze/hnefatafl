@@ -7,7 +7,7 @@ function updateMousePosition(event) {
     mouse.pos.y = event.clientY;
 
     //boardposition
-    mouse.boardPos = getboardposition(event.clientY+selection_y_offset, event.clientX)
+    mouse.boardPos = getboardposition(event.clientY + selection_y_offset, event.clientX)
 
     //if out of bounds
     if (mouse.boardPos.x > 10) mouse.boardPos.x = 10;
@@ -21,10 +21,10 @@ function getboardposition(top, left) {
         y: Math.round((2 * (top - board_y_offset) * tilewidth - (left - board_x_offset) * tileheight) / (tilewidth * tileheight)) + 5
     }
 }
-function getrealposition(rx,ry,x_offset,y_offset) {
-    return{
-        x:(rx - ry - 1) * tilewidth * 0.5 + (tilewidth * boardsize * 0.5) +x_offset,
-        y:(rx + ry) * tileheight * 0.25 +y_offset
+function getrealposition(rx, ry, x_offset, y_offset) {
+    return {
+        x: (rx - ry - 1) * tilewidth * 0.5 + (tilewidth * boardsize * 0.5) + x_offset,
+        y: (rx + ry) * tileheight * 0.25 + y_offset
     }
 }
 function removedefault() {

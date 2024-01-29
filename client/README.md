@@ -5,13 +5,13 @@
 
 ## Features
 #### Added in this commit
-- Now when you press on a piece the code uses piece position and not the mouse position
-- A bit better visualisation of allowed moves(now irrelevant to move pieces are half transparent)
-- Z-Index is better but still wrong
-- Pieces cant move against rules
-- COMMENTS!!!
+- File names and variables changed to be more easily readable
+- Implemented sides (right now only affects what pieces you can move and hover)
 
 #### Already existing
+- Added comments
+- Z-Index is fixed
+- Pieces cant move against rules
 - Visualisation of allowed moves
 - Board is centered
 - Eased snapping

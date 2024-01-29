@@ -11,22 +11,27 @@ body {
     background-color: rgba(255, 255, 128, 0.5);
     font-family: 'DM Mono', monospace;
 }
-img{
-    transition: top 0.1s,left 0.1s,margin-top 0.1s,opacity 0.25s;
+
+img {
+    transition: top 0.1s, left 0.1s, margin-top 0.1s, opacity 0.25s;
 }
-.pieces:hover{
+
+.friendly_piece:hover {
     margin-top: -10px;
 }
-.dot{
+
+.dot {
     width: 10px;
     height: 10px;
     position: absolute;
     border-radius: 50%;
     z-index: 9999999999999999999999999;
 }
-.red{
+
+.red {
     background-color: red;
 }
-.green{
+
+.green {
     background-color: greenyellow;
 }
