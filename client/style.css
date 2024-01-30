@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "NordicFont";
+    src: url("./fonts/norse-font/Norse-KaWl.otf");
+}
+
 input:focus,
 select:focus,
 textarea:focus,
@@ -6,7 +11,7 @@ button:focus {
 }
 
 body {
-    margin: 2.5%;
+    margin: 0%;
     overflow: hidden;
     background-color: rgba(255, 255, 128, 0.5);
     font-family: 'DM Mono', monospace;
@@ -34,4 +39,10 @@ img {
 
 .green {
     background-color: greenyellow;
+}
+.redoutline{
+    stroke:crimson;
+}
+.blueoutline{
+    stroke: aqua;
 }

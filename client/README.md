@@ -4,10 +4,7 @@
 - Pieces hover works in unconvinient ways
 
 ## Features
-#### Added in this commit
 - An animation of pieces
-
-#### Already existing
 - File names and variables are easily readable
 - Implemented sides 
 - Added comments

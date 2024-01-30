@@ -4,16 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hnefetafl</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <title>Hnefatafl</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="stylesheet" href="./style.css" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono&display=swap" rel="stylesheet">
+    <link href="./fonts/norse-font/Norse-KaWl.otf" rel="stylesheet">
 </head>
 
 <body onmouseup="unselectpiece()" onload="drawboard();drawpieces();removedefault();animatepieces()">
-    <div id="board" ></div>
-    <div id="pieces"></div>
+    <div id="game_part">
+        <div id="board"></div>
+        <div id="pieces"></div>
+        <svg viewBox="0 0 400 100" style="position: absolute;width:20vw;left:80vw;">
+            <line x1="0" x2="85" y1="-5" y2="80" class="redoutline"  stroke-width="5"/>
+            <line x1="120" x2="400" y1="100" y2="100" class="redoutline" stroke-width="10"/>
+            <path d="M 85 80 Q 102.5 95 120 97.5" class="redoutline" stroke-width="5"/>
+        </svg>
+        <svg viewBox="0 0 400 100" style="position: absolute;width:20vw;top:calc(100vh - 20vw / 4)">
+            <line x1="315" x2="400" y1="20" y2="105" class="blueoutline"  stroke-width="5"/>
+            <line x1="0" x2="280" y1="0" y2="0" class="blueoutline" stroke-width="10"/>
+            <path d="M 280 2.5 Q 300 5 315 20" class="blueoutline" stroke-width="5"/>
+        </svg>
+    </div>
 </body>
 <script src="./js/drawing.js"></script>
 <script src="./js/listeners.js"></script>
+
 </html>
