@@ -251,3 +251,60 @@ function getpiecesintheway(x, y) {
     }
     return piecesitw;
 }
+function updatesides() {
+    if(side=="defender"){
+        var fr = document.getElementById("player_info");
+        var childrenF = fr.children;
+        for (let c = 0; c < childrenF.length; c++) {
+            if(childrenF[c].tagName=="line"||childrenF[c].tagName=="path") childrenF[c].classList="redoutline";
+        }
+        var en = document.getElementById("enemy_info");
+        var childrenE = en.children;
+        for (let c = 0; c < childrenE.length; c++) {
+            if(childrenE[c].tagName=="line"||childrenE[c].tagName=="path") childrenE[c].classList="blueoutline";
+        }
+    }else{
+        var fr = document.getElementById("player_info");
+        var childrenF = fr.children;
+        for (let c = 0; c < childrenF.length; c++) {
+            if(childrenF[c].tagName=="line"||childrenF[c].tagName=="path") childrenF[c].classList="blueoutline";
+        }
+        var en = document.getElementById("enemy_info");
+        var childrenE = en.children;
+        for (let c = 0; c < childrenE.length; c++) {
+            if(childrenE[c].tagName=="line"||childrenE[c].tagName=="path") childrenE[c].classList="redoutline";
+        }
+    }
+}
+function updatetakenpieces(frp, enp) {
+    var step = 0;
+    if (side == "attacker") {
+        var fr = document.getElementById("player_info_pieces_container");
+        fr.innerHTML = "";
+        if (frp > 12) frp = 12
+        for (let i = 0; i < frp; i++) {
+            fr.innerHTML += `<image href="./media/defender.png" width="35" height="35" x="${90 + 15 * i}" y ="15"></image>`
+        }
+        var en = document.getElementById("enemy_info_pieces_container");
+        en.innerHTML = "";
+        step = 15;
+        if (enp > 13) step = 195 / enp
+        for (let i = 0; i < enp; i++) {
+            en.innerHTML += ` <image href="./media/attacker.png" width="35" height="35" x="${280 - step * i}" y ="50"></image>`
+        }
+    } else {
+        var fr = document.getElementById("player_info_pieces_container");
+        fr.innerHTML = "";
+        step = 15;
+        if (frp > 13) step = 195 / frp
+        for (let i = 0; i < frp; i++) {
+            fr.innerHTML += `<image href="./media/attacker.png" width="35" height="35" x="${90 + step * i}" y ="15"></image>`
+        }
+        var en = document.getElementById("enemy_info_pieces_container");
+        en.innerHTML = "";
+        if (enp > 12) enp = 12
+        for (let i = 0; i < enp; i++) {
+            en.innerHTML += ` <image href="./media/defender.png" width="35" height="35" x="${280 - 15 * i}" y ="50"></image>`
+        }
+    }
+}
