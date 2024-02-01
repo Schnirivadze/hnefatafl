@@ -16,7 +16,7 @@
     <div id="game_part">
         <div id="board"></div>
         <div id="pieces"></div>
-        <svg id="enemy_info" viewBox="0 0 400 100" style="position: absolute;width:20vw;left:80vw;">
+        <svg id="enemy_info" viewBox="0 0 400 100" style="position: absolute;width:20vw;left:80vw;transition: top 0.5s;top:calc(20vw / -4)">
             <line x1="0" x2="85" y1="-5" y2="80" class="redoutline"  stroke-width="5"/>
             <line x1="120" x2="400" y1="100" y2="100" class="redoutline" stroke-width="10"/>
             <path d="M 85 80 Q 102.5 95 120 97.5" class="redoutline" stroke-width="5"/>
@@ -30,7 +30,7 @@
             </defs>
 
         </svg>
-        <svg id="player_info" viewBox="0 0 400 100" style="position: absolute;width:20vw;top:calc(100vh - 20vw / 4)">
+        <svg id="player_info" viewBox="0 0 400 100" style="position: absolute;width:20vw;top:100vh;transition: top 0.5s;">
             <line x1="315" x2="400" y1="20" y2="105" class="blueoutline"  stroke-width="5"/>
             <line x1="0" x2="280" y1="0" y2="0" class="blueoutline" stroke-width="10"/>
             <path d="M 280 2.5 Q 300 5 315 20" class="blueoutline" stroke-width="5"/>

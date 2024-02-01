@@ -114,6 +114,9 @@ function animatepieces() {
             defenders[d].style.opacity = "1";
         }, defenders_reveal_timeout)
     }
+    setTimeout(function () {
+        document.getElementById("player_info").style.top="calc(100vh - 20vw / 4)"
+    }, defenders_reveal_timeout)
 
     //reveal all attackers in attackers_reveal_timeout ms
     var attackers = document.getElementsByClassName("attacker");
@@ -122,6 +125,9 @@ function animatepieces() {
             attackers[a].style.opacity = "1";
         }, attackers_reveal_timeout)
     }
+    setTimeout(function () {
+        document.getElementById("enemy_info").style.top="0px"
+    }, attackers_reveal_timeout)
 
 }
 function selectpiece(id, event) {
