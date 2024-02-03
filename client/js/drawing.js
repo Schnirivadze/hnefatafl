@@ -114,9 +114,16 @@ function animatepieces() {
             defenders[d].style.opacity = "1";
         }, defenders_reveal_timeout)
     }
-    setTimeout(function () {
-        document.getElementById("player_info").style.top="calc(100vh - 20vw / 4)"
-    }, defenders_reveal_timeout)
+    if(side=="defender"){
+        setTimeout(function () {
+            document.getElementById("player_info").style.top="calc(100vh - 20vw / 4)"
+        }, defenders_reveal_timeout)
+    }else{
+        setTimeout(function () {
+            document.getElementById("enemy_info").style.top="0px"
+        }, defenders_reveal_timeout)
+    }
+    
 
     //reveal all attackers in attackers_reveal_timeout ms
     var attackers = document.getElementsByClassName("attacker");
@@ -125,10 +132,15 @@ function animatepieces() {
             attackers[a].style.opacity = "1";
         }, attackers_reveal_timeout)
     }
-    setTimeout(function () {
-        document.getElementById("enemy_info").style.top="0px"
-    }, attackers_reveal_timeout)
-
+    if(side=="attacker"){
+        setTimeout(function () {
+            document.getElementById("player_info").style.top="calc(100vh - 20vw / 4)"
+        }, attackers_reveal_timeout)
+    }else{
+        setTimeout(function () {
+            document.getElementById("enemy_info").style.top="0px"
+        }, attackers_reveal_timeout)
+    }
 }
 function selectpiece(id, event) {
     selection.piece = document.getElementById(id);//set selection
