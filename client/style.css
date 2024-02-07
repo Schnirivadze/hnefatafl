@@ -40,9 +40,11 @@ img {
 .green {
     background-color: greenyellow;
 }
-.redoutline{
-    stroke:crimson;
+
+.redoutline {
+    stroke: crimson;
 }
-.blueoutline{
+
+.blueoutline {
     stroke: aqua;
 }
