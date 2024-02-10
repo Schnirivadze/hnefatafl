@@ -1,4 +1,5 @@
 // size
+var pixel_boardsize = window.innerWidth * 0.6;
 var boardsize = 11;
 let board_a = new Array(boardsize);// array of pieces`s types
 for (let l = 0; l < board_a.length; l++) { board_a[l] = new Array(boardsize); }
@@ -6,10 +7,9 @@ for (let y = 0; y < board_a.length; y++) { for (let x = 0; x < boardsize; x++) {
 let board_id = new Array(boardsize);// map with ids of pieces
 for (let l = 0; l < board_id.length; l++) { board_id[l] = new Array(boardsize); }
 for (let y = 0; y < board_id.length; y++) { for (let x = 0; x < boardsize; x++) { board_id[y][x] = -1; } }
-var tilewidth = 100;
-var tileheight = 100;
-var piecewidth = 75;
-var piecewidth = 75;
+var tilewidth = pixel_boardsize / boardsize;
+var tileheight = pixel_boardsize / boardsize;
+var piecewidth = tilewidth * 0.75;
 var pieceheight = piecewidth / 608 * 1080;
 // selection
 var side = "defender";// or "attacker"
@@ -35,7 +35,7 @@ var mouse = {
 var overall_x_offset = (window.innerWidth - boardsize * tilewidth) / 2;
 var overall_y_offset = (window.innerHeight - boardsize * tileheight / 2) / 2 - 0;
 var piece_x_offset = 12 + overall_x_offset;
-var piece_y_offset = -90 + overall_y_offset;
+var piece_y_offset = overall_y_offset - (pieceheight/3*2);
 var board_x_offset = 0 + overall_x_offset;
 var board_y_offset = 0 + overall_y_offset;
 var selection_y_offset = 0;
@@ -257,9 +257,6 @@ function unselectpiece() {
         }
     }
 }
-function isinbounds(p) {
-    return p < boardsize && p >= 0;
-}
 function showacessibletiles(x, y) {
     // get all pieces and tiles
     var tiles = document.getElementsByClassName("tiles");
@@ -281,63 +278,6 @@ function showacessibletiles(x, y) {
         for (let p = 0; p < piecesitw.length; p++) { document.getElementById(`piece_${piecesitw[p]}`).style.opacity = relevant_piece_opacity; }
     }
 
-}
-function getaccessibletiles(x, y) {
-    var atiles = new Array();
-    atiles.push([x, y]);// push position of a piece
-    // check left until found the edge of the map
-    for (let left = 1; left < boardsize; left++) {
-        if (x - left < 0) break; // if out of bounds
-        else if (board_a[y][x - left] == "none") { atiles.push([x - left, y]); }  // if tile is accsesible
-        else break; // if found edge
-    }
-    // check right until found the edge of the map
-    for (let right = 1; right < boardsize; right++) {
-        if (x + right >= boardsize) break; // if out of bounds
-        else if (board_a[y][x + right] == "none") { atiles.push([x + right, y]); } // if tile is accsesible
-        else break; // if found edge
-    }
-    // check up until found the edge of the map
-    for (let up = 1; up < boardsize; up++) {
-        if (y - up < 0) break; // if out of bounds
-        else if (board_a[y - up][x] == "none") { atiles.push([x, y - up]); } // if tile is accsesible
-        else break; // if found edge
-    }
-    // check down until found the edge of the map
-    for (let down = 1; down < boardsize; down++) {
-        if (y + down >= boardsize) break; // if out of bounds
-        else if (board_a[y + down][x] == "none") { atiles.push([x, y + down]); } // if tile is accsesible
-        else break; // if found edge
-    }
-    return atiles;
-}
-function getpiecesintheway(x, y) {
-    var piecesitw = new Array();
-    // check left until found piece in the way or end of the map
-    for (let left = 1; left < boardsize; left++) {
-        if (x - left < 0) break; // if out of bounds
-        else if (board_a[y][x - left] == "none") continue; // if empty tile
-        else { piecesitw.push(board_id[y][x - left]); break; }; // if found piece
-    }
-    // check right until found piece in the way or end of the map
-    for (let right = 1; right < boardsize; right++) {
-        if (x + right >= boardsize) break; // if out of bounds
-        else if (board_a[y][x + right] == "none") continue; // if empty tile
-        else { piecesitw.push(board_id[y][x + right]); break; }; // if found piece
-    }
-    // check up until found piece in the way or end of the map
-    for (let up = 1; up < boardsize; up++) {
-        if (y - up < 0) break; // if out of bounds
-        else if (board_a[y - up][x] == "none") continue; // if empty tile
-        else { piecesitw.push(board_id[y - up][x]); break; }; // if found piece
-    }
-    // check down until found piece in the way or end of the map
-    for (let down = 1; down < boardsize; down++) {
-        if (y + down >= boardsize) break; // if out of bounds
-        else if (board_a[y + down][x] == "none") continue; // if empty tile
-        else { piecesitw.push(board_id[y + down][x]); break; }; // if found piece
-    }
-    return piecesitw;
 }
 function updatesides() {
     if (side == "defender") {
@@ -395,22 +335,4 @@ function updatetakenpieces() {
             en.innerHTML += ` <image href="./media/defender.png" width="35" height="35" x="${280 - 15 * i}" y ="50"></image>`
         }
     }
-}
-function removepiece(x, y) {
-    document.getElementById(`piece_${board_id[y][x]}`).remove();// remove from existence
-    board_id[y][x] = -1;//remove id
-    //update score
-    if (ishostile(x, y)) friendly_taken_pieces++;
-    else hostile_taken_pieces++;
-
-    board_a[y][x] = "none";//remove class
-    updatetakenpieces();
-}
-function isfriendly(x, y) {
-    if (side == "defender") return board_a[y][x] == "defender" || board_a[y][x] == "king";
-    else return board_a[y][x] == "attacker";
-}
-function ishostile(x, y) {
-    if (side == "defender") return board_a[y][x] == "attacker";
-    else return board_a[y][x] == "attacker" || board_a[y][x] == "king";
 }
